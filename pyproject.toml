@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto-identifier"
+version = "0.1.0"
+description = "NIST-feature-based block cipher identification pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "cryptography>=42",
+    "matplotlib>=3.8",
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scikit-learn>=1.3",
+    "scipy>=1.11",
+    "seaborn>=0.13",
+    "torch>=2.1",
+]
+
+[project.scripts]
+crypto-pipeline = "crypto_identifier.pipeline:main"
+crypto-generate = "crypto_identifier.data_generation:main"
+crypto-extract = "crypto_identifier.feature_extraction:main"
+crypto-evaluate = "crypto_identifier.classification:main"
+crypto-plot = "crypto_identifier.plotting:main"
+crypto-server = "crypto_identifier.api:run_server"
+
+[tool.setuptools.packages.find]
+where = ["src"]

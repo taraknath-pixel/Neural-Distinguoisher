@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoCipher AI | NIST SP 800-22 Cipher Identifier</title>
+  <meta name="description" content="Deep learning block cipher algorithm identification using NIST SP 800-22 statistical randomness features, multiple model architectures, and live manual encryption generator.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header class="header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">CryptoCipher<span class="accent">AI</span></span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-label" id="backend-status">Backend Active</span>
+        </div>
+        <button id="theme-toggle" class="btn-icon" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    <!-- Left Column: Controls, Upload, & Manual Generator -->
+    <div class="sidebar-column">
+      
+      <!-- Input Mode Switcher (Upload vs Live Manual Generator) -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tab-upload-btn" data-mode="upload">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Upload / Presets</span>
+        </button>
+        <button class="mode-tab" id="tab-generate-btn" data-mode="generate">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span>Manual Input &amp; Generator</span>
+        </button>
+      </div>
+
+      <!-- Model Configuration Card -->
+      <section class="card config-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <h2 class="card-title">Model &amp; Architecture Settings</h2>
+        </div>
+
+        <!-- Task Selection -->
+        <div class="form-group">
+          <label class="form-label">Classification Task</label>
+          <div class="segmented-control" id="task-segmented-control">
+            <button class="segment-btn active" data-task="multiclass" id="task-multi-btn">
+              <span>5-Cipher (All)</span>
+              <small>Chance: 20%</small>
+            </button>
+            <button class="segment-btn" data-task="binary" id="task-binary-btn">
+              <span>Binary (AES vs 3DES)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Architecture Selection -->
+        <div class="form-group">
+          <label class="form-label" for="arch-select">Classifier Architecture</label>
+          <div class="arch-selector-grid" id="arch-selector-grid">
+            <button class="arch-chip active" data-arch="cnn">1D CNN</button>
+            <button class="arch-chip" data-arch="rf">Random Forest</button>
+            <button class="arch-chip" data-arch="svm">SVM (RBF)</button>
+            <button class="arch-chip" data-arch="mlp">MLP Neural Net</button>
+            <button class="arch-chip" data-arch="knn">KNN</button>
+            <button class="arch-chip" data-arch="lr">Logistic Reg</button>
+            <button class="arch-chip" data-arch="gnb">Gaussian NB</button>
+            <button class="arch-chip highlight-chip" data-arch="all">Compare All</button>
+          </div>
+        </div>
+
+        <!-- Size Bucket Selection (1kb, 8kb, 64kb, 256kb, 512kb) -->
+        <div class="form-group">
+          <label class="form-label">Ciphertext Size Bucket</label>
+          <div class="size-pill-group" id="size-pill-group">
+            <button class="size-pill active" data-size="auto" id="size-auto-btn">Auto-Detect</button>
+            <button class="size-pill" data-size="1kb" id="size-1kb-btn">1 KB</button>
+            <button class="size-pill" data-size="8kb" id="size-8kb-btn">8 KB</button>
+            <button class="size-pill" data-size="64kb" id="size-64kb-btn">64 KB</button>
+            <button class="size-pill" data-size="256kb" id="size-256kb-btn">256 KB</button>
+            <button class="size-pill" data-size="512kb" id="size-512kb-btn">512 KB</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW A: File Upload & Preset Samples View -->
+      <div id="view-upload-container">
+        <!-- File Upload Card -->
+        <section class="card upload-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <h2 class="card-title">Upload Ciphertext (.bin)</h2>
+          </div>
+
+          <div class="dropzone" id="dropzone" tabindex="0">
+            <input type="file" id="file-input" accept=".bin" class="file-input-hidden">
+            <div class="dropzone-inner">
+              <div class="upload-icon-wrapper">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="12" y1="18" x2="12" y2="12"></line>
+                  <line x1="9" y1="15" x2="12" y2="12"></line>
+                  <line x1="15" y1="15" x2="12" y2="12"></line>
+                </svg>
+              </div>
+              <p class="dropzone-text">Drag &amp; drop raw ciphertext file here</p>
+              <p class="dropzone-subtext">Accepts <code>.bin</code> files (1KB, 8KB, 64KB, 256KB, 512KB)</p>
+              <button class="btn btn-secondary btn-sm" id="browse-btn" type="button">Select File</button>
+            </div>
+          </div>
+
+          <!-- Selected File Preview -->
+          <div class="selected-file-panel hidden" id="selected-file-panel">
+            <div class="file-info-row">
+              <span class="file-name" id="file-name-display">sample.bin</span>
+              <span class="file-size-badge" id="file-size-display">1,040 bytes</span>
+            </div>
+            <div class="hex-preview">
+              <div class="hex-header">Hex Sample (First 32 bytes)</div>
+              <pre class="hex-body" id="hex-preview-body">00 1a 4f 3b c8 9e 11 ff ...</pre>
+            </div>
+            <button class="btn btn-primary btn-block" id="predict-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>Run Classification</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- All 25 Preset Samples Card -->
+        <section class="card samples-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <h2 class="card-title">Dataset Preset Samples (1kb &ndash; 512kb)</h2>
+          </div>
+          
+          <!-- Size Filter Tabs -->
+          <div class="sample-size-filter" id="sample-size-filter">
+            <button class="size-filter-btn active" data-filter="all">All Sizes</button>
+            <button class="size-filter-btn" data-filter="1kb">1 KB</button>
+            <button class="size-filter-btn" data-filter="8kb">8 KB</button>
+            <button class="size-filter-btn" data-filter="64kb">64 KB</button>
+            <button class="size-filter-btn" data-filter="256kb">256 KB</button>
+            <button class="size-filter-btn" data-filter="512kb">512 KB</button>
+          </div>
+          <!-- Algorithm Filter Buttons -->
+          <div class="preset-algo-filter" id="preset-algo-filter">
+            <button class="algo-filter-btn active" data-alg="all">All Algorithms</button>
+            <button class="algo-filter-btn" data-alg="AES">AES</button>
+            <button class="algo-filter-btn" data-alg="3DES">3DES</button>
+          </div>
+
+          <!-- 25 Samples Matrix -->
+          <div class="samples-matrix" id="samples-matrix">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW B: Live Manual Input & Ciphertext Generator -->
+      <div id="view-generate-container" class="hidden">
+        <section class="card generator-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <h2 class="card-title">Live Ciphertext Generator</h2>
+          </div>
+
+          <p class="card-desc">Enter custom plaintext or generate random UUID data, select a cipher and size, and encrypt new data in real time.</p>
+
+          <div class="form-group">
+            <label class="form-label">Target Cipher Algorithm</label>
+            <div class="cipher-select-row" id="gen-cipher-row">
+              <button class="cipher-chip active" data-cipher="AES">AES-128</button>
+              <button class="cipher-chip" data-cipher="3DES">3DES</button>
+              <button class="cipher-chip" data-cipher="Blowfish">Blowfish</button>
+              <button class="cipher-chip" data-cipher="CAST">CAST-128</button>
+              <button class="cipher-chip" data-cipher="RC2">RC2</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Data Size</label>
+            <div class="gen-size-pills" id="gen-size-pills">
+              <button class="size-pill active" data-size="1kb">1 KB (1,024 B)</button>
+              <button class="size-pill" data-size="8kb">8 KB (8,192 B)</button>
+              <button class="size-pill" data-size="64kb">64 KB (65,536 B)</button>
+              <button class="size-pill" data-size="256kb">256 KB</button>
+              <button class="size-pill" data-size="512kb">512 KB</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label-row">
+              <label class="form-label">Plaintext Input (Optional)</label>
+              <button class="btn-text-sm" id="btn-uuid-fill" type="button">Use Random UUIDs</button>
+            </div>
+            <textarea id="gen-plaintext-input" class="form-textarea" placeholder="Type custom plaintext message here or click 'Use Random UUIDs' to generate standard high-entropy plaintext..."></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btn-generate-encrypt">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Encrypt &amp; Run Classification</span>
+          </button>
+
+          <!-- Generated Ciphertext Readout -->
+          <div class="generated-readout-panel hidden" id="generated-readout-panel">
+            <div class="readout-header">
+              <span class="readout-tag">Generated Ciphertext</span>
+              <span class="readout-size" id="gen-readout-bytes">1,040 bytes</span>
+            </div>
+            <div class="hex-preview">
+              <div class="hex-header">SHA-256: <span id="gen-readout-sha" class="sha-text">...</span></div>
+              <pre class="hex-body" id="gen-readout-hex">00 1a ...</pre>
+            </div>
+            <button class="btn btn-secondary btn-sm btn-block" id="btn-download-generated" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Generated .bin</span>
+            </button>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Results Dashboard -->
+    <div class="results-column">
+      <!-- Loading State -->
+      <div class="loading-state hidden" id="loading-state">
+        <div class="spinner-ring"></div>
+        <p class="loading-title">Extracting features and running classification...</p>
+        <p class="loading-desc" id="loading-arch-text">Executing neural inference through selected architecture</p>
+      </div>
+
+      <!-- Welcome / Empty State -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <h3 class="empty-title">Ready for Cipher Identification</h3>
+        <p class="empty-desc">Choose a dataset sample (1KB &ndash; 512KB), upload a <code>.bin</code> file, or use the <strong>Manual Input Generator</strong> to encrypt live plaintext and test algorithm identification across 7 architectures.</p>
+      </div>
+
+      <!-- Results Display Container -->
+      <div class="results-container hidden" id="results-container">
+        
+        <!-- Top Prediction Card -->
+        <section class="card prediction-card" id="prediction-card">
+          <div class="prediction-header">
+            <div class="prediction-meta">
+              <span class="meta-pill" id="result-task-pill">Task: 5-Cipher Multiclass</span>
+              <span class="meta-pill" id="result-arch-pill">Model: 1D CNN</span>
+              <span class="meta-pill" id="result-size-pill">Size: 1 KB</span>
+              <span class="meta-pill ground-truth-pill hidden" id="ground-truth-pill">Ground Truth: AES</span>
+            </div>
+            <div class="prediction-title-group">
+              <span class="predicted-label">Predicted Algorithm</span>
+              <div class="predicted-cipher-name" id="predicted-cipher-name">AES</div>
+            </div>
+          </div>
+
+          <div class="prediction-stats-row">
+            <div class="pred-stat">
+              <span class="stat-number" id="pred-confidence">50.5%</span>
+              <span class="stat-desc">Confidence Score</span>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Multi-Architecture Comparison Card (When 'Compare All' is chosen) -->
+        <section class="card arch-compare-card hidden" id="arch-compare-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </div>
+            <h2 class="card-title">Architecture Comparison (All 7 Models)</h2>
+          </div>
+          <div class="arch-comparison-grid" id="arch-comparison-grid">
+            <!-- Injected cards for CNN, RF, SVM, MLP, KNN, LR, GNB -->
+          </div>
+        </section>
+
+        <!-- Probability Distribution Card -->
+        <section class="card probabilities-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <h2 class="card-title">Softmax Probability Distribution</h2>
+          </div>
+          <div class="prob-bars-container" id="prob-bars-container">
+            <!-- Bars dynamically injected -->
+          </div>
+
+        </section>
+
+
+      </div>
+    </div>
+  </main>
+
+
+
+  <script src="app.js"></script>
+</body>
+</html>

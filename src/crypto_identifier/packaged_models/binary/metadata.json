@@ -1,0 +1,19 @@
+{
+  "task": "binary",
+  "name": "Binary Cipher Identifier (AES vs 3DES)",
+  "classes": [
+    "AES",
+    "3DES"
+  ],
+  "num_classes": 2,
+  "trained_size": "64kb",
+  "split": 10,
+  "measured_test_accuracy": 0.505,
+  "chance_accuracy": 0.5,
+  "best_validation_loss": 0.690228,
+  "is_experimental": true,
+  "status": "experimental",
+  "disclaimer": "Held-out test accuracy is 50.5%, virtually equal to chance (50.0%). AES and 3DES both pass NIST randomness tests identically.",
+  "cnn_weights_file": "best_cnn.pt",
+  "scaler_file": "scaler.joblib"
+}

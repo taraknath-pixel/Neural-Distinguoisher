@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+
+# Large Datasets & Model Training Outputs (>100MB / GBs)
+crypto_validation_dataset/
+validation_results/
+src/crypto_identifier/packaged_models/binary_short/
+*.joblib.bak
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Temporary screenshots & testing artifacts
+.pytest_cache/
+*.png
+*.log
+
+# Scratch files
+scratch/

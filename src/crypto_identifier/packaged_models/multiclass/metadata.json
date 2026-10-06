@@ -1,0 +1,22 @@
+{
+  "task": "multiclass",
+  "name": "5-Cipher Identifier (Multiclass CNN)",
+  "classes": [
+    "AES",
+    "3DES",
+    "CAST",
+    "RC2",
+    "Blowfish"
+  ],
+  "num_classes": 5,
+  "trained_size": "256kb",
+  "split": 4,
+  "measured_test_accuracy": 0.202,
+  "chance_accuracy": 0.2,
+  "best_validation_loss": 1.607869,
+  "is_experimental": true,
+  "status": "experimental",
+  "disclaimer": "Held-out test accuracy is 20.2%, virtually equal to chance (20.0%). All 5 ciphers produce statistically indistinguishable NIST features.",
+  "cnn_weights_file": "best_cnn.pt",
+  "scaler_file": "scaler.joblib"
+}

@@ -1,0 +1,5 @@
+Row,Ciphertext_Hex,Byte_Length,Prediction,Belongs_To_Target,Confidence,AES_Score,3DES_Score,None_Score,Reason
+1,c40b82fcfffc5620fa2e51b8aa069fb6030a61dffeec3172...,1040,AES,YES,51.90%,51.90%,48.10%,0.00%,Verified candidate: classified as AES with 51.90% confidence.
+2,9c3e0cca4b4d907e3a04747051d4fe73d844317e2ccf9ff5...,1032,3DES,YES,51.90%,48.10%,51.90%,0.00%,Verified candidate: classified as 3DES with 51.90% confidence.
+3,4a6f686e20446f6520697320612067757920776f206c6f76...,31,Does not belong to AES or 3DES,NO,100.00%,0.00%,0.00%,100.00%,Ciphertext length (31 bytes) is not an integer multiple of 8 or 16 bytes; cannot be valid AES or 3DES block ciphertext.
+4,9513157d4a06f63e626953a49474b3b840aabae11c61a752...,1032,Does not belong to AES or 3DES,NO,100.00%,0.00%,0.00%,100.00%,"Input metadata/hint indicates Blowfish, which does not belong to AES or 3DES."

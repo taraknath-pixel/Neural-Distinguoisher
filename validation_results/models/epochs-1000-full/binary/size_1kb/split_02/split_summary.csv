@@ -1,0 +1,2 @@
+file_size,split,seed,best_epoch,epochs_ran,best_validation_loss,best_validation_accuracy,test_accuracy
+1kb,2,42,4,104,0.6922982335090637,0.49687501788139343,0.5

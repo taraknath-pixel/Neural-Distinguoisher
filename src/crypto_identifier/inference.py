@@ -1224,7 +1224,7 @@ class CipherPredictor:
             "selected_model_size": size,
             "selected_architecture": architecture,
             "architecture_name": SUPPORTED_ARCHITECTURES.get(architecture, "1D CNN"),
-            "input_info": input_info,
+            "input_info": clean_input_info,
             "architecture_comparison": comparison_data,
             "model_metadata": {
                 "model_name": task_info["name"],

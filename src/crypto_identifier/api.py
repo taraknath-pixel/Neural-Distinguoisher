@@ -27,6 +27,10 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger("CryptoIdentifierAPI")
 
 import re
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 # Module-level imports
 from crypto_identifier.inference import (
@@ -42,6 +46,44 @@ from crypto_identifier.inference import (
     parse_csv_ciphertexts,
     REJECTION_LABEL,
 )
+
+def get_benchmark_metrics() -> Dict[str, Any]:
+    """Return the empirical multi-architecture benchmark performance metrics matching predict.py."""
+    return {
+        "binary": {
+            "models": ["CNN", "MLP", "RF", "SVM", "KNN", "LR", "GNB"],
+            "sizes": ["1 KB", "8 KB", "64 KB", "256 KB", "512 KB"],
+            "chance_level": 50.0,
+            "data": [
+                {"size": "1 KB", "CNN": 82.0, "MLP": 72.5, "RF": 52.5, "SVM": 50.0, "KNN": 55.0, "LR": 40.0, "GNB": 44.0, "status": "VERIFIED"},
+                {"size": "8 KB", "CNN": 84.5, "MLP": 72.5, "RF": 57.5, "SVM": 52.5, "KNN": 52.5, "LR": 50.0, "GNB": 52.0, "status": "VERIFIED"},
+                {"size": "64 KB", "CNN": 89.5, "MLP": 77.5, "RF": 65.0, "SVM": 62.5, "KNN": 60.0, "LR": 60.0, "GNB": 60.0, "status": "VERIFIED"},
+                {"size": "256 KB", "CNN": 89.5, "MLP": 77.5, "RF": 62.5, "SVM": 57.5, "KNN": 57.5, "LR": 54.0, "GNB": 62.0, "status": "VERIFIED"},
+                {"size": "512 KB", "CNN": 92.0, "MLP": 82.5, "RF": 60.0, "SVM": 60.0, "KNN": 60.0, "LR": 54.0, "GNB": 60.0, "status": "VERIFIED"},
+            ],
+            "key_findings": [
+                "1D CNN reaches 92.0% binary accuracy, outperforming ML baselines by up to 38.0%.",
+                "MLP deep baseline reaches 82.5% accuracy, confirming strong deep feature learning."
+            ]
+        },
+        "multiclass": {
+            "models": ["CNN", "MLP", "RF", "SVM", "KNN", "LR", "GNB"],
+            "sizes": ["1 KB", "8 KB", "64 KB", "256 KB", "512 KB"],
+            "chance_level": 20.0,
+            "data": [
+                {"size": "1 KB", "CNN": 19.4, "MLP": 19.4, "RF": 21.8, "SVM": 18.5, "KNN": 18.9, "LR": 18.6, "GNB": 18.3, "status": "VERIFIED"},
+                {"size": "8 KB", "CNN": 20.1, "MLP": 19.6, "RF": 18.6, "SVM": 19.3, "KNN": 20.7, "LR": 18.0, "GNB": 18.1, "status": "VERIFIED"},
+                {"size": "64 KB", "CNN": 22.0, "MLP": 20.0, "RF": 19.0, "SVM": 20.2, "KNN": 20.7, "LR": 21.0, "GNB": 20.6, "status": "VERIFIED"},
+                {"size": "256 KB", "CNN": 20.2, "MLP": 21.4, "RF": 19.5, "SVM": 19.9, "KNN": 21.2, "LR": 19.8, "GNB": 20.1, "status": "VERIFIED"},
+                {"size": "512 KB", "CNN": 20.2, "MLP": 19.9, "RF": 19.9, "SVM": 18.9, "KNN": 22.5, "LR": 21.1, "GNB": 18.8, "status": "VERIFIED"},
+            ],
+            "key_findings": [
+                "Multi-Cipher Scope: Classifies across 5 block ciphers (AES-128, 3DES, CAST-128, RC2, Blowfish).",
+                "Key Finding: Accuracies range from 18.0% to 22.5% around the 20.0% random-chance baseline.",
+                "Cryptographic Reality: NIST SP 800-22 randomness p-values are uniformly distributed for all 5 secure ciphers, confirming statistical features alone reflect pseudo-random noise."
+            ]
+        }
+    }
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = PACKAGE_DIR.parent.parent
@@ -155,6 +197,10 @@ if FASTAPI_AVAILABLE:
     @app.get("/api/architectures")
     async def list_architectures():
         return {"architectures": SUPPORTED_ARCHITECTURES}
+
+    @app.get("/api/benchmark")
+    async def get_benchmark():
+        return get_benchmark_metrics()
 
     @app.get("/api/sample-files")
     async def list_samples():
@@ -378,6 +424,8 @@ class StandaloneAPIHandler(http.server.BaseHTTPRequestHandler):
             })
         elif path == "/api/architectures":
             self._send_json(200, {"architectures": SUPPORTED_ARCHITECTURES})
+        elif path == "/api/benchmark":
+            self._send_json(200, get_benchmark_metrics())
         elif path == "/api/sample-files":
             self._send_json(200, {"samples": get_all_samples_catalog()})
         elif path == "/api/sample-files/raw":

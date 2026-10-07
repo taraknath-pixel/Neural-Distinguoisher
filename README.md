@@ -66,3 +66,9 @@ summarizes every split; `checkpoint_ranking.csv` ranks saved `best_cnn.pt`
 checkpoints by validation loss (best first). Immutable aggregate reports are saved under
 `validation_results/runs/<run-name>/`, so later runs do not overwrite earlier
 results. Use `--run-name experiment-01` to provide a recognizable artifact directory name.
+
+<!-- Run -->
+<!-- python -m crypto_identifier.api
+cd c:\Users\ritik\OneDrive\Documents\NeuralAI\backend\Neural-Distinguoisher
+python -m uvicorn src.crypto_identifier.api:app --reload --port 8000 -->
+

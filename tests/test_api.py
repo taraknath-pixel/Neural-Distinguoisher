@@ -42,8 +42,7 @@ def main():
         assert resp.status == 200
         data = json.loads(resp.read().decode())
         assert data["status"] == "healthy"
-        print(f"✓ Health Check OK: {data}")
-
+        print(f"[+] Health Check OK: {data}")
     # 2. Test /api/models
     print("\n--- 2. Testing GET /api/models ---")
     req = urllib.request.Request(f"{base_url}/api/models")
@@ -52,10 +51,25 @@ def main():
         data = json.loads(resp.read().decode())
         assert len(data["models"]) == 2
         assert data["feature_count"] == 49
-        print(f"✓ Models API OK: Found {len(data['models'])} registered models with {data['feature_count']} NIST features")
+        print(f"[+] Models API OK: Found {len(data['models'])} registered models with {data['feature_count']} NIST features")
 
-    # 3. Test /api/sample-files
-    print("\n--- 3. Testing GET /api/sample-files ---")
+    # 3. Test /api/benchmark
+    print("\n--- 3. Testing GET /api/benchmark ---")
+    req = urllib.request.Request(f"{base_url}/api/benchmark")
+    with urllib.request.urlopen(req) as resp:
+        assert resp.status == 200
+        data = json.loads(resp.read().decode())
+        assert "binary" in data
+        assert "multiclass" in data
+        assert len(data["binary"]["data"]) == 5
+        assert len(data["multiclass"]["data"]) == 5
+        assert data["binary"]["data"][0]["CNN"] == 82.0
+        assert data["binary"]["data"][4]["CNN"] == 92.0
+        assert data["multiclass"]["data"][0]["CNN"] == 19.4
+        print(f"[+] Benchmark API OK: Verified Binary & Multiclass benchmark matrices (5 sizes x 7 models)")
+
+    # 4. Test /api/sample-files
+    print("\n--- 4. Testing GET /api/sample-files ---")
     req = urllib.request.Request(f"{base_url}/api/sample-files")
     with urllib.request.urlopen(req) as resp:
         assert resp.status == 200
@@ -63,10 +77,10 @@ def main():
         assert "samples" in data
         assert len(data["samples"]) > 0
         sample_0 = data["samples"][0]
-        print(f"✓ Sample Catalog OK: Found {len(data['samples'])} samples (First: {sample_0['algorithm']} {sample_0['size_label']})")
+        print(f"[+] Sample Catalog OK: Found {len(data['samples'])} samples (First: {sample_0['algorithm']} {sample_0['size_label']})")
 
-    # 4. Test /api/predict with raw binary file
-    print("\n--- 4. Testing POST /api/predict (Multipart Ciphertext Upload) ---")
+    # 5. Test /api/predict with raw binary file
+    print("\n--- 5. Testing POST /api/predict (Multipart Ciphertext Upload) ---")
     sample_path = WORKSPACE_ROOT / "crypto_validation_dataset" / "ciphertext" / "AES" / "1kb" / "sample_0000.bin"
     file_bytes = sample_path.read_bytes()
     
@@ -93,7 +107,7 @@ def main():
         assert data["predicted_cipher"] in ["AES", "3DES", "CAST", "RC2", "Blowfish"]
         assert len(data["probabilities"]) == 5
         assert len(data["all_features"]) == 49
-        print(f"✓ Upload Prediction OK:")
+        print(f"[+] Upload Prediction OK:")
         print(f"  Predicted Cipher: {data['predicted_cipher']} (Confidence: {data['confidence']:.2%})")
         print(f"  Probabilities: {data['probabilities']}")
         print(f"  Experimental Status: {data['experimental_notice']['status']}")
